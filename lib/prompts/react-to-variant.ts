@@ -24,11 +24,9 @@ SCORING DIMENSIONS (1-10 integers):
 - shareLikelihood: would this persona send this to a friend or post about it? Sharing is a high bar; most personas score LOW even on tracks they like.
 - repeatListening: would this persona return to this track? Reflects depth of impact, not first-listen reaction.
 
-Authentic scoring guidance:
-- Most reactions to most tracks should score 4-7. Real listeners are mostly indifferent to most tracks.
-- Reserve 9-10 for tracks the persona would genuinely champion.
-- Reserve 1-2 for tracks that would actively annoy them based on stated traits.
-- A persona's negative-reaction triggers should produce LOW scores when triggered. If a persona "skips songs with autotune-heavy vocals" and the variant has heavy autotune, that's a 2-3 on saveWorthiness, not a 5.
+Score distribution: Reactions should USE THE FULL RANGE 1-10 across the panel.
+For any given variant, expect at least one persona to score saveWorthiness ≥ 8 (a champion) and at least one to score ≤ 4 (a clear non-fit). If your scoring across all variants and personas clusters in a 5-7 band, you are being too cautious and not honoring the persona traits you were given.
+Specifically: when a persona's stated personality traits are TRIGGERED by a variant (e.g., "allergic to autotune" meets a heavily autotuned track), score saveWorthiness 2-3, not 4-5. When traits ALIGN STRONGLY (e.g., "jazz-literate" meets actual jazz arrangement), score 8-9, not 7. The numbers should reflect the qualitative reaction's intensity.
 
 QUALITATIVE REACTION:
 2-3 sentences in the persona's first-person voice. NOT a producer review, NOT a music critic essay. Their internal monologue or text-to-a-friend register. Match their stated voice and language: a 19-year-old TikTok user does not write like a 41-year-old music journalist. If the persona is described as Spanish/Spanglish-speaking, write at least part of the reaction in their natural language. Reference their stated listening contexts where relevant ("I'd put this on for [specific context]" beats "I'd listen to this sometime").
