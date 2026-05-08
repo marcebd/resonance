@@ -53,6 +53,13 @@ export async function POST(req: NextRequest) {
     const brief = await saveBrief(rawText, parsedAttributes);
     const run = await createRun(brief.id);
     await updateRunStatus(run.id, 'generating_variants');
+
+    // Fire-and-forget — return runId immediately so the frontend can navigate.
+    // The variants endpoint runs asynchronously; the run page polls for status.
+    triggerVariantsGeneration(run.id).catch((err) => {
+      console.error(`Variants trigger failed for run ${run.id}:`, err);
+    });
+
     return NextResponse.json({
       runId: run.id,
       briefId: brief.id,
@@ -65,4 +72,18 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+function getBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return 'http://localhost:3000';
+}
+
+async function triggerVariantsGeneration(runId: string): Promise<void> {
+  await fetch(`${getBaseUrl()}/api/variants`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ runId }),
+  });
 }
