@@ -8,7 +8,7 @@ import ResultsHeader from '@/components/results/ResultsHeader';
 import RecommendationCard from '@/components/results/RecommendationCard';
 import TopPicksCard from '@/components/results/TopPicksCard';
 import DivergentReactionsCard from '@/components/results/DivergentReactionsCard';
-import ReactionMatrixPlaceholder from '@/components/results/ReactionMatrixPlaceholder';
+import ReactionMatrix from '@/components/results/ReactionMatrix';
 import TransmissionGraphPlaceholder from '@/components/results/TransmissionGraphPlaceholder';
 import DeepDiveSection from '@/components/results/DeepDiveSection';
 
@@ -61,7 +61,7 @@ export default async function ResultsPage({
           />
         </div>
 
-        <ReactionMatrixPlaceholder
+        <ReactionMatrix
           variants={fullRun.variants}
           personas={fullRun.personas}
           reactions={fullRun.reactions}
