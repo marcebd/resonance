@@ -92,7 +92,7 @@ export default function ReactionMatrix({
                         </span>
                       )}
                     </div>
-                    <div className="mt-0.5 max-w-[180px] truncate font-mono text-[10px] text-neutral-500">
+                    <div className="mt-1 line-clamp-2 max-w-[280px] font-mono text-[10px] leading-snug text-neutral-500">
                       {v.hook}
                     </div>
                   </button>
