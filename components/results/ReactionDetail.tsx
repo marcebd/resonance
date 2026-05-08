@@ -56,16 +56,9 @@ export default function ReactionDetail({
 
       <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <ScoreDimension label="Save" score={reaction.scores.saveWorthiness} />
-        <ScoreDimension
-          label="Skip"
-          score={reaction.scores.skipLikelihood}
-          inverted
-        />
+        <ScoreDimension label="Skip" score={reaction.scores.skipLikelihood} />
         <ScoreDimension label="Share" score={reaction.scores.shareLikelihood} />
-        <ScoreDimension
-          label="Repeat"
-          score={reaction.scores.repeatListening}
-        />
+        <ScoreDimension label="Repeat" score={reaction.scores.repeatListening} />
       </div>
 
       <p className="mb-4 whitespace-pre-line font-mono text-sm leading-relaxed text-neutral-800">
@@ -96,15 +89,11 @@ export default function ReactionDetail({
 function ScoreDimension({
   label,
   score,
-  inverted = false,
 }: {
   label: string;
   score: number;
-  inverted?: boolean;
 }) {
-  const intensity = inverted
-    ? intensityFromScore(10 - score)
-    : intensityFromScore(score);
+  const intensity = intensityFromScore(score);
   return (
     <div>
       <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-neutral-500">
