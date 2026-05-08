@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getFullRun } from '@/lib/kv';
 import ResultsHeader from '@/components/results/ResultsHeader';
+import VariantList from '@/components/results/VariantList';
 import RecommendationCard from '@/components/results/RecommendationCard';
 import TopPicksCard from '@/components/results/TopPicksCard';
 import DivergentReactionsCard from '@/components/results/DivergentReactionsCard';
@@ -43,6 +44,8 @@ export default async function ResultsPage({
 
       <div className="mx-auto max-w-5xl space-y-8 px-6 py-10">
         <ResultsHeader brief={fullRun.brief} run={fullRun.run} />
+
+        <VariantList variants={fullRun.variants} />
 
         <RecommendationCard
           recommendation={fullRun.synthesis.recommendation}
