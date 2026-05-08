@@ -6,6 +6,7 @@ import type { FullRun } from '../types';
 
 const POLL_INTERVAL_MS = 2000;
 const REDIRECT_DELAY_MS = 800;
+const STUCK_TIMEOUT_MS = 6 * 60 * 1000; // 6 minutes — covers cold starts + worst-case pipeline
 
 type PollingState = {
   runId: string | null;
@@ -53,6 +54,17 @@ export function useRunPolling(
           setError(data.run.errorMessage ?? 'Something went wrong.');
           return;
         }
+
+        // Stuck-run detection: if updatedAt hasn't moved in 6+ minutes and
+        // status isn't terminal, treat as stuck so the user isn't left waiting.
+        const updatedAt = new Date(data.run.updatedAt).getTime();
+        if (Date.now() - updatedAt > STUCK_TIMEOUT_MS) {
+          setError(
+            `Run appears stuck at "${data.run.status.replace('_', ' ')}". This usually resolves on retry.`,
+          );
+          return;
+        }
+
         timeoutId = setTimeout(poll, POLL_INTERVAL_MS);
       } catch {
         if (cancelled) return;
