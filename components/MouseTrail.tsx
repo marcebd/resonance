@@ -9,8 +9,8 @@ type Props = {
 };
 
 export default function MouseTrail({
-  color = '#22d3ee', // cyan-400
-  lineWidth = 6,
+  color = 'rgba(34, 211, 238, 0.4)', // cyan-400 @ 40%
+  lineWidth = 14,
   minDistance = 4,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
