@@ -1,17 +1,10 @@
-// The headline page Soheil reads first. Layout-only —
-// real components plug in via Tasks 3.3 (matrix), 3.5 (transmission), 3.6 (deep-dive).
+// Server-fetches the run, hands data to the client ResultsView for state
+// coordination. Keeps the matrix/cards highlight wiring out of this layer.
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getFullRun } from '@/lib/kv';
-import ResultsHeader from '@/components/results/ResultsHeader';
-import VariantList from '@/components/results/VariantList';
-import RecommendationCard from '@/components/results/RecommendationCard';
-import TopPicksCard from '@/components/results/TopPicksCard';
-import DivergentReactionsCard from '@/components/results/DivergentReactionsCard';
-import ReactionMatrix from '@/components/results/ReactionMatrix';
-import TransmissionGraphPlaceholder from '@/components/results/TransmissionGraphPlaceholder';
-import DeepDiveSection from '@/components/results/DeepDiveSection';
+import ResultsView from '@/components/results/ResultsView';
 
 export default async function ResultsPage({
   params,
@@ -42,51 +35,7 @@ export default async function ResultsPage({
         </Link>
       </header>
 
-      <div className="mx-auto max-w-5xl space-y-8 px-6 py-10">
-        <ResultsHeader brief={fullRun.brief} run={fullRun.run} />
-
-        <VariantList variants={fullRun.variants} />
-
-        <RecommendationCard
-          recommendation={fullRun.synthesis.recommendation}
-        />
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <TopPicksCard
-            segments={fullRun.synthesis.topVariantPerSegment}
-            variants={fullRun.variants}
-            topVariantOverall={fullRun.synthesis.topVariantOverall}
-          />
-          <DivergentReactionsCard
-            divergentReactions={fullRun.synthesis.divergentReactions}
-            variants={fullRun.variants}
-            personas={fullRun.personas}
-          />
-        </div>
-
-        <ReactionMatrix
-          variants={fullRun.variants}
-          personas={fullRun.personas}
-          reactions={fullRun.reactions}
-        />
-
-        <TransmissionGraphPlaceholder
-          variants={fullRun.variants}
-          personas={fullRun.personas}
-          reactions={fullRun.reactions}
-        />
-
-        <DeepDiveSection
-          variants={fullRun.variants}
-          personas={fullRun.personas}
-          reactions={fullRun.reactions}
-        />
-
-        <footer className="border-t border-neutral-300 pt-6 pb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-          Built with Claude Code · Sonnet 4.6 + Opus 4.7 · Synthetic personas
-          are directional, not predictive
-        </footer>
-      </div>
+      <ResultsView fullRun={fullRun} />
     </main>
   );
 }
