@@ -10,6 +10,8 @@ type Props = {
   variants: Variant[];
   personas: Persona[];
   reactions: Reaction[];
+  highlightedVariantId?: string | null;
+  onClearHighlight?: () => void;
 };
 
 type CellKey = `${string}|${string}`; // variantId|personaId
@@ -22,6 +24,8 @@ export default function ReactionMatrix({
   variants,
   personas,
   reactions,
+  highlightedVariantId,
+  onClearHighlight,
 }: Props) {
   const [selection, setSelection] = useState<Selection>(null);
 
@@ -55,6 +59,23 @@ export default function ReactionMatrix({
         {variants.length} variants × {personas.length} personas · {reactions.length} reactions · click a cell for detail
       </p>
 
+      {highlightedVariantId && onClearHighlight && (
+        <div className="mb-3 flex items-center justify-between border border-cyan-400 bg-cyan-50 px-3 py-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-700">
+            Highlighting Variant{' '}
+            <span className="font-bold text-black">
+              {variants.find((v) => v.id === highlightedVariantId)?.label}
+            </span>
+          </p>
+          <button
+            onClick={onClearHighlight}
+            className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600 underline hover:text-black"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       <div className="overflow-x-auto">
         <table className="w-full border-separate border-spacing-1">
           <thead>
@@ -76,9 +97,10 @@ export default function ReactionMatrix({
           <tbody>
             {variants.map((v) => {
               const isVariantSel = selection?.type === 'variant' && selection.variantId === v.id;
+              const isRowHL = highlightedVariantId === v.id;
               return (
-              <tr key={v.id}>
-                <td className="sticky left-0 z-10 bg-white p-0">
+              <tr key={v.id} className={isRowHL ? 'bg-cyan-50' : ''}>
+                <td className={`sticky left-0 z-10 p-0 ${isRowHL ? 'bg-cyan-50' : 'bg-white'}`}>
                   <button
                     onClick={() => setSelection(isVariantSel ? null : { type: 'variant', variantId: v.id })}
                     className={`block w-full px-2 py-1 text-left transition-all ${isVariantSel ? 'ring-2 ring-cyan-400 ring-offset-1' : 'hover:bg-neutral-50'}`}
