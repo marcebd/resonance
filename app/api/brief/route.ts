@@ -5,7 +5,9 @@
 import { NextRequest, NextResponse, after } from 'next/server';
 import { saveBrief, createRun, updateRunStatus } from '@/lib/kv';
 import { parseBrief } from '@/lib/prompts/parse-brief';
-import { getBaseUrl } from '@/lib/url';
+import { runPipeline } from '@/lib/orchestrate-pipeline';
+
+export const maxDuration = 300; // pipeline runs inside after(); needs full window
 
 const MIN_LENGTH = 20;
 const MAX_LENGTH = 2000;
@@ -55,16 +57,9 @@ export async function POST(req: NextRequest) {
     const run = await createRun(brief.id);
     await updateRunStatus(run.id, 'generating_variants');
 
-    // Defer the trigger via `after()` so Vercel keeps the function alive long
-    // enough to actually dispatch the next-stage fetch. Without this, the
-    // function is killed when the response is sent and the trigger never lands.
-    after(async () => {
-      try {
-        await triggerVariantsGeneration(run.id);
-      } catch (err) {
-        console.error(`Variants trigger failed for run ${run.id}:`, err);
-      }
-    });
+    // Run the entire pipeline inline within after(). Avoids unreliable
+    // Vercel-to-Vercel HTTP fetches between separate function instances.
+    after(() => runPipeline(run.id, brief));
 
     return NextResponse.json({
       runId: run.id,
@@ -80,10 +75,3 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function triggerVariantsGeneration(runId: string): Promise<void> {
-  await fetch(`${getBaseUrl()}/api/variants`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ runId }),
-  });
-}
