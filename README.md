@@ -100,4 +100,4 @@ A single end-to-end run costs roughly $0.50 in Anthropic API credits (37 model c
 
 ---
 
-*Built by Marcela Billingslea. [GitHub](https://github.com/marcebd) · [LinkedIn](https://linkedin.com/in/REPLACE-WITH-YOUR-HANDLE)*
+*Built by Marcela Billingslea. [GitHub](https://github.com/marcebd) · [LinkedIn](https://www.linkedin.com/in/marcelabillingslea/)*
