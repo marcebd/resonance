@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRun, getBrief, savePersonas, updateRunStatus } from '@/lib/kv';
 import { generatePersonas } from '@/lib/prompts/generate-personas';
+import { getBaseUrl } from '@/lib/url';
 
 export async function POST(req: NextRequest) {
   let body: { runId?: unknown };
@@ -63,6 +64,11 @@ export async function POST(req: NextRequest) {
   try {
     await savePersonas(brief.id, personas);
     await updateRunStatus(runId, 'reacting');
+
+    triggerReactions(runId).catch((err) => {
+      console.error(`Reactions trigger failed for run ${runId}:`, err);
+    });
+
     return NextResponse.json({
       runId: run.id,
       personaCount: personas.length,
@@ -75,4 +81,12 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+async function triggerReactions(runId: string): Promise<void> {
+  await fetch(`${getBaseUrl()}/api/reactions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ runId }),
+  });
 }
