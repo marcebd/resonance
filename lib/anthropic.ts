@@ -24,9 +24,10 @@ export async function callClaude(opts: ClaudeCallOptions): Promise<string> {
   const response = await client.messages.create({
     model: opts.model ?? DEFAULT_MODEL,
     max_tokens: opts.maxTokens ?? 2048,
-    temperature: opts.temperature ?? 1.0,
     system: opts.systemPrompt,
     messages: [{ role: 'user', content: opts.userPrompt }],
+    // Some models (e.g. Opus 4.7) reject `temperature`; only pass it when set.
+    ...(opts.temperature !== undefined && { temperature: opts.temperature }),
   });
 
   const block = response.content[0];
