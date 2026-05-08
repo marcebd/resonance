@@ -1,10 +1,16 @@
-// Placeholder. Task 3.2 will replace this with the results dashboard
-// (synthesis cards, reaction matrix, transmission graph).
-// For now: full FullRun JSON dump so we can verify pipeline output end-to-end.
+// The headline page Soheil reads first. Layout-only —
+// real components plug in via Tasks 3.3 (matrix), 3.5 (transmission), 3.6 (deep-dive).
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getFullRun } from '@/lib/kv';
+import ResultsHeader from '@/components/results/ResultsHeader';
+import RecommendationCard from '@/components/results/RecommendationCard';
+import TopPicksCard from '@/components/results/TopPicksCard';
+import DivergentReactionsCard from '@/components/results/DivergentReactionsCard';
+import ReactionMatrixPlaceholder from '@/components/results/ReactionMatrixPlaceholder';
+import TransmissionGraphPlaceholder from '@/components/results/TransmissionGraphPlaceholder';
+import DeepDiveSection from '@/components/results/DeepDiveSection';
 
 export default async function ResultsPage({
   params,
@@ -13,7 +19,10 @@ export default async function ResultsPage({
 }) {
   const { id } = await params;
   const fullRun = await getFullRun(id);
-  if (!fullRun) notFound();
+
+  if (!fullRun || fullRun.run.status !== 'complete' || !fullRun.synthesis) {
+    notFound();
+  }
 
   return (
     <main className="min-h-screen bg-white text-black">
@@ -24,33 +33,56 @@ export default async function ResultsPage({
         >
           <span aria-hidden="true">♪ </span>RESONANCE
         </Link>
-        <span className="border border-black px-3 py-1 font-mono text-[10px] tracking-[0.25em]">
-          RESULTS {id.slice(4, 12).toUpperCase()}
-        </span>
-      </header>
-
-      <div className="mx-auto max-w-4xl px-6 py-12">
         <Link
           href="/"
-          className="mb-8 inline-block font-mono text-[10px] tracking-[0.3em] text-neutral-500 hover:text-black"
+          className="border border-black px-3 py-1 font-mono text-[10px] tracking-[0.25em] hover:bg-black hover:text-white"
         >
-          ← BACK
+          NEW RUN →
         </Link>
+      </header>
 
-        <h1 className="mb-3 font-mono text-2xl tracking-tight">
-          STATUS:{' '}
-          <span className="text-cyan-500">
-            {fullRun.run.status.replace('_', ' ').toUpperCase()}
-          </span>
-        </h1>
+      <div className="mx-auto max-w-5xl space-y-8 px-6 py-10">
+        <ResultsHeader brief={fullRun.brief} run={fullRun.run} />
 
-        <p className="mb-10 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-400">
-          Placeholder · Task 3.2 replaces this with the results dashboard
-        </p>
+        <RecommendationCard
+          recommendation={fullRun.synthesis.recommendation}
+        />
 
-        <pre className="overflow-x-auto border border-black bg-neutral-50 p-4 font-mono text-[11px] leading-relaxed text-neutral-800">
-          {JSON.stringify(fullRun, null, 2)}
-        </pre>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <TopPicksCard
+            segments={fullRun.synthesis.topVariantPerSegment}
+            variants={fullRun.variants}
+            topVariantOverall={fullRun.synthesis.topVariantOverall}
+          />
+          <DivergentReactionsCard
+            divergentReactions={fullRun.synthesis.divergentReactions}
+            variants={fullRun.variants}
+            personas={fullRun.personas}
+          />
+        </div>
+
+        <ReactionMatrixPlaceholder
+          variants={fullRun.variants}
+          personas={fullRun.personas}
+          reactions={fullRun.reactions}
+        />
+
+        <TransmissionGraphPlaceholder
+          variants={fullRun.variants}
+          personas={fullRun.personas}
+          reactions={fullRun.reactions}
+        />
+
+        <DeepDiveSection
+          variants={fullRun.variants}
+          personas={fullRun.personas}
+          reactions={fullRun.reactions}
+        />
+
+        <footer className="border-t border-neutral-300 pt-6 pb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+          Built with Claude Code · Sonnet 4.6 + Opus 4.7 · Synthetic personas
+          are directional, not predictive
+        </footer>
       </div>
     </main>
   );
