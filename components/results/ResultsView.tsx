@@ -12,7 +12,7 @@ import RecommendationCard from './RecommendationCard';
 import TopPicksCard from './TopPicksCard';
 import DivergentReactionsCard from './DivergentReactionsCard';
 import ReactionMatrix from './ReactionMatrix';
-import TransmissionGraphPlaceholder from './TransmissionGraphPlaceholder';
+import TransmissionGraph from './TransmissionGraph';
 import DeepDiveSection from './DeepDiveSection';
 
 type Props = {
@@ -70,7 +70,7 @@ export default function ResultsView({ fullRun }: Props) {
         />
       </div>
 
-      <TransmissionGraphPlaceholder
+      <TransmissionGraph
         variants={fullRun.variants}
         personas={fullRun.personas}
         reactions={fullRun.reactions}
