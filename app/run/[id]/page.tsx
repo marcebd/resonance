@@ -1,21 +1,17 @@
-// Placeholder. Task 3.3 will replace this with the live streaming view.
-// For now: dump FullRun JSON so we can verify the brief → run wiring.
+'use client';
 
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getFullRun } from '@/lib/kv';
+import { useRunPolling } from '@/lib/hooks/use-run-polling';
+import { STAGES, getStageStatus } from '@/lib/run-stages';
+import StageCard from '@/components/StageCard';
 
-export default async function RunPage({
+export default function RunPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const fullRun = await getFullRun(id);
-
-  if (!fullRun) {
-    notFound();
-  }
+  const { runId, fullRun, error, notFound } = useRunPolling(params);
+  if (notFound) return <NotFoundState />;
 
   return (
     <main className="min-h-screen bg-white text-black">
@@ -27,32 +23,70 @@ export default async function RunPage({
           <span aria-hidden="true">♪ </span>RESONANCE
         </Link>
         <span className="border border-black px-3 py-1 font-mono text-[10px] tracking-[0.25em]">
-          RUN {id.slice(4, 12).toUpperCase()}
+          RUN {runId ? runId.slice(4, 12).toUpperCase() : '────────'}
         </span>
       </header>
 
       <div className="mx-auto max-w-3xl px-6 py-12">
+        {fullRun && (
+          <div className="mb-10">
+            <p className="mb-3 font-mono text-[10px] tracking-[0.3em] text-neutral-500">
+              BRIEF / 01
+            </p>
+            <p className="border-l-2 border-cyan-400 pl-4 font-mono text-sm leading-relaxed text-neutral-800">
+              {fullRun.brief.rawText}
+            </p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-8 border border-red-500 bg-red-50 px-4 py-3 font-mono text-xs text-red-800">
+            <p className="font-medium uppercase tracking-[0.2em]">
+              Generation failed
+            </p>
+            <p className="mt-2 leading-relaxed">{error}</p>
+            <Link
+              href="/"
+              className="mt-3 inline-block underline hover:no-underline"
+            >
+              ← Start a new run
+            </Link>
+          </div>
+        )}
+
+        <p className="mb-3 font-mono text-[10px] tracking-[0.3em] text-neutral-500">
+          PIPELINE / 02
+        </p>
+        <div className="space-y-2">
+          {STAGES.map((s) => (
+            <StageCard
+              key={s.status}
+              label={s.label}
+              status={getStageStatus(fullRun?.run.status, s.status)}
+              detail={s.detail(fullRun)}
+              multiline={s.multiline}
+            />
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function NotFoundState() {
+  return (
+    <main className="min-h-screen bg-white text-black">
+      <div className="mx-auto max-w-2xl px-6 py-16">
+        <h1 className="font-mono text-2xl tracking-tight">RUN NOT FOUND</h1>
+        <p className="mt-3 font-mono text-sm text-neutral-600">
+          This run ID doesn&apos;t exist or has expired (30-day TTL).
+        </p>
         <Link
           href="/"
-          className="mb-8 inline-block font-mono text-[10px] tracking-[0.3em] text-neutral-500 hover:text-black"
+          className="mt-6 inline-block border border-black bg-black px-4 py-2 font-mono text-xs uppercase tracking-[0.25em] text-white hover:bg-neutral-800"
         >
-          ← BACK
+          Start a new run →
         </Link>
-
-        <h1 className="mb-3 font-mono text-2xl tracking-tight">
-          STATUS:{' '}
-          <span className="text-cyan-500">
-            {fullRun.run.status.replace('_', ' ').toUpperCase()}
-          </span>
-        </h1>
-
-        <p className="mb-10 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-400">
-          Placeholder · Task 3.3 replaces this with the live generation UI
-        </p>
-
-        <pre className="overflow-x-auto border border-black bg-neutral-50 p-4 font-mono text-[11px] leading-relaxed text-neutral-800">
-          {JSON.stringify(fullRun, null, 2)}
-        </pre>
       </div>
     </main>
   );
