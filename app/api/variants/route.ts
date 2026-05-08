@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRun, getBrief, saveVariants, updateRunStatus } from '@/lib/kv';
 import { generateVariants } from '@/lib/prompts/generate-variants';
+import { getBaseUrl } from '@/lib/url';
 
 export async function POST(req: NextRequest) {
   let body: { runId?: unknown };
@@ -63,6 +64,11 @@ export async function POST(req: NextRequest) {
   try {
     await saveVariants(brief.id, variants);
     await updateRunStatus(runId, 'generating_personas');
+
+    triggerPersonasGeneration(runId).catch((err) => {
+      console.error(`Personas trigger failed for run ${runId}:`, err);
+    });
+
     return NextResponse.json({
       runId: run.id,
       variantCount: variants.length,
@@ -75,4 +81,12 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
+}
+
+async function triggerPersonasGeneration(runId: string): Promise<void> {
+  await fetch(`${getBaseUrl()}/api/personas`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ runId }),
+  });
 }

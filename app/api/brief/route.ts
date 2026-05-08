@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveBrief, createRun, updateRunStatus } from '@/lib/kv';
 import { parseBrief } from '@/lib/prompts/parse-brief';
+import { getBaseUrl } from '@/lib/url';
 
 const MIN_LENGTH = 20;
 const MAX_LENGTH = 2000;
@@ -72,12 +73,6 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
-}
-
-function getBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return 'http://localhost:3000';
 }
 
 async function triggerVariantsGeneration(runId: string): Promise<void> {
