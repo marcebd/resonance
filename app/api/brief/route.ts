@@ -1,8 +1,10 @@
-// Stub. Task 2.1 will replace the unparsed-attribute placeholders with real
-// parse-brief Claude calls. The shape of the request/response stays identical.
+// Validates input, parses the brief via Claude, persists Brief and Run,
+// and advances run status to generating_variants. Task 2.2 will add the
+// actual variant generation trigger.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { saveBrief, createRun } from '@/lib/kv';
+import { saveBrief, createRun, updateRunStatus } from '@/lib/kv';
+import { parseBrief } from '@/lib/prompts/parse-brief';
 
 const MIN_LENGTH = 20;
 const MAX_LENGTH = 2000;
@@ -36,16 +38,26 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  let parsedAttributes;
   try {
-    const brief = await saveBrief(rawText, {
-      genre: 'unparsed',
-      mood: [],
-      tempo: 'unparsed',
-      targetUseCase: 'unparsed',
-      targetDemographic: 'unparsed',
-    });
+    parsedAttributes = await parseBrief(rawText);
+  } catch (err) {
+    console.error('Brief parsing failed:', err);
+    return NextResponse.json(
+      { error: 'Failed to parse brief. Try a more specific description.' },
+      { status: 422 },
+    );
+  }
+
+  try {
+    const brief = await saveBrief(rawText, parsedAttributes);
     const run = await createRun(brief.id);
-    return NextResponse.json({ runId: run.id });
+    await updateRunStatus(run.id, 'generating_variants');
+    return NextResponse.json({
+      runId: run.id,
+      briefId: brief.id,
+      parsedAttributes,
+    });
   } catch (err) {
     console.error('POST /api/brief failed:', err);
     return NextResponse.json(
