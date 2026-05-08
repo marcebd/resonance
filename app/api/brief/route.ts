@@ -8,26 +8,35 @@ const MIN_LENGTH = 20;
 const MAX_LENGTH = 2000;
 
 export async function POST(req: NextRequest) {
+  let body: { rawText?: unknown };
   try {
-    const body = await req.json();
-    const rawText: unknown = body.rawText;
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { error: 'Invalid JSON body' },
+      { status: 400 },
+    );
+  }
 
-    if (typeof rawText !== 'string') {
-      return NextResponse.json(
-        { error: 'rawText must be a string' },
-        { status: 400 },
-      );
-    }
+  const rawText = body?.rawText;
 
-    if (rawText.length < MIN_LENGTH || rawText.length > MAX_LENGTH) {
-      return NextResponse.json(
-        {
-          error: `Brief must be between ${MIN_LENGTH} and ${MAX_LENGTH} characters`,
-        },
-        { status: 400 },
-      );
-    }
+  if (typeof rawText !== 'string') {
+    return NextResponse.json(
+      { error: 'rawText must be a string' },
+      { status: 400 },
+    );
+  }
 
+  if (rawText.length < MIN_LENGTH || rawText.length > MAX_LENGTH) {
+    return NextResponse.json(
+      {
+        error: `Brief must be between ${MIN_LENGTH} and ${MAX_LENGTH} characters`,
+      },
+      { status: 400 },
+    );
+  }
+
+  try {
     const brief = await saveBrief(rawText, {
       genre: 'unparsed',
       mood: [],
@@ -35,9 +44,7 @@ export async function POST(req: NextRequest) {
       targetUseCase: 'unparsed',
       targetDemographic: 'unparsed',
     });
-
     const run = await createRun(brief.id);
-
     return NextResponse.json({ runId: run.id });
   } catch (err) {
     console.error('POST /api/brief failed:', err);
