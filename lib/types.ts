@@ -28,7 +28,8 @@ export type Variant = {
   id: string;
   briefId: string;
   label: 'A' | 'B' | 'C' | 'D' | 'E';
-  description: string; // What a listener would hear, 2-3 sentences
+  title: string; // 3-4 word producer-meeting handle, e.g. "THE BEDROOM CRY"
+  description: string; // EXACTLY 2 sentences in genre vernacular
   hook: string; // What makes this variant memorable
   productionNotes: string; // Instrumentation, structure, tempo, key
 };
