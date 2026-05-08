@@ -4,7 +4,7 @@
 
 [**▶ Live demo**](https://resonance-ruddy.vercel.app/results/run_2f05a395-8490-471c-9f45-1ec5522e4783) · [Sample synthesis](#sample-output) · [How it works](#what-this-is)
 
-![Resonance results page showing synthesis recommendation, top picks, and reaction matrix](screenshots/03-results-hero.png)
+![Resonance landing page — monospace hero text "audience reaction prediction for AI music" overlaid by a cursor-drawn cyan loop](screenshots/01-landing.png)
 
 ---
 
