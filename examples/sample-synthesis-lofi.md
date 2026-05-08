@@ -1,39 +1,39 @@
 # Sample Synthesis — Lo-Fi Hip Hop Run
 
-> **Brief:** Lo-fi hip hop, melancholic, 75 BPM, instrumental. For background study during rainy evenings. College students 18-24.
+> **Brief:** Lo-fi hip hop, melancholic, 75 BPM, instrumental. For background study during rainy evenings. Audience: college students.
 
 This is the headline output a producer reads first — generated from 30 reactions × 6 personas × 5 variants by `claude-opus-4-7`.
 
 ## Top Variant Overall
 
-**D — THE EMPTY KITCHEN**
-> A single upright piano carries the entire harmonic weight with no accompaniment for the first 32 bars — drums enter so softly at the halfway point they read as ambience before they register as rhythm.
+**D — THE OVERDUE DRAFT**
+> Four simultaneous melodic voices — vibraphone, muted trumpet, Rhodes, and a high-pass filtered string swell — layer across each other in counterpoint, creating harmonic movement without a single element changing its loop.
 
 ## Top Variant Per Segment
 
 The 6-persona panel naturally clustered into three functional segments — **not** demographic ones.
 
-**Intentional listeners (treat tracks as objects, not tools) → Variant D**
-> Renata heard genuine compositional intent in the solo-piano structural argument and the ambiguous drum entry, and Hana described it as 'existing in a very quiet way' that earns rain-day intentional listening. Yejin's autobiographical-memory frame also locked onto Variant D as the 'before the noodles cool' moment — three of the panel's most aesthetically demanding listeners converged here.
+**Functional background listeners (music-as-tool) → Variant A — THE EMPTY LIBRARY**
+> Tenzin and Amahle both need music that disappears into the work — Variant A is the only track Amahle scored above a 6 without reservation, and Tenzin's only flagged concern was the fade ending rather than any structural distraction. The eighth-bar drum dropouts read as "breathing" to focus-mode listeners rather than as compositional events demanding attention.
 
-**Pure-utility focus listeners (music as workflow infrastructure) → Variant E**
-> Chiamaka — the panel's strictest functional listener — explicitly reported losing awareness of Variant E for forty-five minutes mid-problem-set, the one variant where she said the locked tempo and shaped-noise density actually let her work. Tomás also described it as the room disappearing during 2am drafting, suggesting Variant E is the most reliable pure-background tool across cultural contexts.
+**Analytical / compositionally-trained listeners → Variant D — THE OVERDUE DRAFT**
+> Wren, Oskar, and Rutendo all gave Variant D their highest or tied-highest saveWorthiness specifically because the four-voice counterpoint passes their compositional bar — Rutendo called it "modal jazz wearing a hoodie" and Wren said it was "the one I've been waiting for lo-fi to attempt." Density rewards close listening, which this segment defaults to.
 
-**Skeptical / edge listeners (adjacent traditions: trip-hop, jazz kissa) → Variant B**
-> Dariusz, who normally finds lo-fi 'aesthetically thin' against Massive Attack, singled out Variant B's bowed-bass sub-frequency work as the rare track doing something he respects. Hana similarly trusted the finger-squeak as proof of a real human hand. Variant B passes the cross-tradition credibility test better than the others.
+**Image-driven / rhythm-anchored listeners → Variant C — THE COLD RADIATOR**
+> Dariela needs an immediate mental image without the track being "too beautiful to ignore" — Variant C gave her a clear room-and-lamp picture in three seconds while still allowing her to design through it. But this segment splits hard: Amahle (rhythm-first from amapiano) rejected the same track as "a metronome with a guitar on top," which is why this segment is unstable rather than unified.
 
 ## Divergent Reactions
 
-**Variant D — Renata (advocate, save=9) vs Chiamaka (detractor, save=3)**
-> Variant D is the panel's clearest aesthetic-vs-utility split: its 32-bar solo-piano opening is read as either a structural argument (Renata, Hana, Yejin all save=9) or as sparseness that fails to anchor a working brain (Chiamaka save=3). The disagreement reveals that D's strength — committing to negative space — is exactly what makes it unusable as pure focus infrastructure, so its commercial path is intentional listening / rain-day playlists, not study-aid placement.
+**Variant E — THE WINDOWSILL SIT — Rutendo (advocate) vs Amahle (detractor)**
+> Variant E (variance 7.47, range 3-9) is the most polarizing track in the panel and the disagreement is structural, not aesthetic — every panelist agrees it's beautifully performed, but it demands emotional engagement rather than offering background utility. For analytical listeners that engagement IS the value; for functional or image-driven listeners it's a failure mode. This track is a foreground piece miscategorized as study music.
 
-**Variant B — Yejin (advocate) vs Chiamaka (detractor)**
-> Variant B polarized on a cultural-context axis rather than a craft axis: Hana, Yejin and Dariusz all heard the nylon-string finger-squeak and bowed-bass drone as evidence of genuine human craft (saves of 8–9), while Chiamaka explicitly rejected the same elements as 'rainy London window' melancholy that wasn't made for her and actively pulled focus during coding. The track's intimacy is its asset for memory-anchoring listeners and its liability for non-Western functional listeners.
+**Variant C — THE COLD RADIATOR — Tenzin (advocate) vs Amahle (detractor)**
+> Variant C (variance 3.89) splits the panel along rhythmic-density expectations: listeners who treat silence as structure (Tenzin, Wren, Dariela, Rutendo) reward the restraint, while Amahle — who comes from amapiano where the LOG drum works every bar — experiences the same emptiness as an unfinished sketch. The track succeeds or fails entirely based on whether the listener's home genre treats space as composition or absence.
 
 ## Recommendation
 
-The aggregate ranking is essentially a tie — Variant D leads at 6.97 but only by 0.07 over Variant B and 0.20 over A/E, which is well inside the noise floor for a six-persona synthetic panel and should not be read as a decisive win. The more useful signal is structural: Variants D and B win with intentional/aesthetic listeners (Renata, Hana, Yejin) while Variant E is the only track that passed the strict functional-utility test from Chiamaka without breaking focus, suggesting D and E serve genuinely different use cases inside the same brief.
+Variant D is the strongest candidate to advance, but the win is marginal (7.17 vs Variant A's 6.97) and the two tracks are doing genuinely different jobs — D wins on compositional respect from analytical listeners (Wren, Oskar, Rutendo all 9s), while A wins on pure background-utility for focus-mode listeners (Tenzin, Amahle).
 
-The concrete recommendation is to **advance Variant D as the lead candidate** for rain-day / mood-anchoring playlist seeding and **hold Variant E in parallel** as the dedicated focus-utility version, while **reworking Variant B's outro** — the one moment Hana and Dariusz flagged as 'designed' rather than discovered — before any further testing. Variant C should be held; its polarization is interesting but its detractors (Chiamaka especially) flagged a trust problem with the lurching pocket that suggests narrower fit.
+The cleanest next test is to **advance BOTH against a real college-student audience, positioned differently**: D for active "lo-fi as listening" contexts (evening playlists, headphone sessions) and A for passive study-session placements. **Hold Variant E** despite its strong individual scores — its variance of 7.47 reveals it's a foreground track miscategorized for this brief, and shipping it as study music will produce skip-rate problems with rhythm-anchored listeners like the Amahle archetype.
 
-These results are **directional, not predictive**: synthetic personas can surface where craft choices land or break, but real-platform engagement, skip behavior on mobile speakers, and cross-cultural reception need an actual-audience test before any distribution commitment.
+These findings are **directional, not predictive**: synthetic personas can surface where a track's compositional choices create friction with listening contexts, but actual platform engagement, skip behavior, and save rates depend on cohort dynamics no panel of six can simulate.
