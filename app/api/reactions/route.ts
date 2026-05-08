@@ -1,7 +1,7 @@
 // Triggered after personas generation completes. Generates 30 reactions in
 // parallel (6 personas × 5 variants), persists them, advances to synthesizing.
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import {
   getRun,
   getVariants,
@@ -78,8 +78,12 @@ export async function POST(req: NextRequest) {
     await saveReactions(run.briefId, result.reactions);
     await updateRunStatus(runId, 'synthesizing');
 
-    triggerSynthesis(runId).catch((err) => {
-      console.error(`Synthesis trigger failed for run ${runId}:`, err);
+    after(async () => {
+      try {
+        await triggerSynthesis(runId);
+      } catch (err) {
+        console.error(`Synthesis trigger failed for run ${runId}:`, err);
+      }
     });
 
     return NextResponse.json({

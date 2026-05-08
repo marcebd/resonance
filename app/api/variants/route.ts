@@ -1,7 +1,7 @@
 // Triggered after brief parsing completes. Generates 5 variants, persists them,
 // advances run status to generating_personas.
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { getRun, getBrief, saveVariants, updateRunStatus } from '@/lib/kv';
 import { generateVariants } from '@/lib/prompts/generate-variants';
 import { getBaseUrl } from '@/lib/url';
@@ -65,8 +65,12 @@ export async function POST(req: NextRequest) {
     await saveVariants(brief.id, variants);
     await updateRunStatus(runId, 'generating_personas');
 
-    triggerPersonasGeneration(runId).catch((err) => {
-      console.error(`Personas trigger failed for run ${runId}:`, err);
+    after(async () => {
+      try {
+        await triggerPersonasGeneration(runId);
+      } catch (err) {
+        console.error(`Personas trigger failed for run ${runId}:`, err);
+      }
     });
 
     return NextResponse.json({

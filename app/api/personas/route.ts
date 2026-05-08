@@ -1,7 +1,7 @@
 // Triggered after variants generation completes. Generates 6 personas,
 // persists them, advances run status to reacting.
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { getRun, getBrief, savePersonas, updateRunStatus } from '@/lib/kv';
 import { generatePersonas } from '@/lib/prompts/generate-personas';
 import { getBaseUrl } from '@/lib/url';
@@ -65,8 +65,12 @@ export async function POST(req: NextRequest) {
     await savePersonas(brief.id, personas);
     await updateRunStatus(runId, 'reacting');
 
-    triggerReactions(runId).catch((err) => {
-      console.error(`Reactions trigger failed for run ${runId}:`, err);
+    after(async () => {
+      try {
+        await triggerReactions(runId);
+      } catch (err) {
+        console.error(`Reactions trigger failed for run ${runId}:`, err);
+      }
     });
 
     return NextResponse.json({

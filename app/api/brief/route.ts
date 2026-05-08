@@ -2,7 +2,7 @@
 // and advances run status to generating_variants. Task 2.2 will add the
 // actual variant generation trigger.
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { saveBrief, createRun, updateRunStatus } from '@/lib/kv';
 import { parseBrief } from '@/lib/prompts/parse-brief';
 import { getBaseUrl } from '@/lib/url';
@@ -55,10 +55,15 @@ export async function POST(req: NextRequest) {
     const run = await createRun(brief.id);
     await updateRunStatus(run.id, 'generating_variants');
 
-    // Fire-and-forget — return runId immediately so the frontend can navigate.
-    // The variants endpoint runs asynchronously; the run page polls for status.
-    triggerVariantsGeneration(run.id).catch((err) => {
-      console.error(`Variants trigger failed for run ${run.id}:`, err);
+    // Defer the trigger via `after()` so Vercel keeps the function alive long
+    // enough to actually dispatch the next-stage fetch. Without this, the
+    // function is killed when the response is sent and the trigger never lands.
+    after(async () => {
+      try {
+        await triggerVariantsGeneration(run.id);
+      } catch (err) {
+        console.error(`Variants trigger failed for run ${run.id}:`, err);
+      }
     });
 
     return NextResponse.json({
