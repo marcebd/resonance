@@ -1,10 +1,11 @@
 // Server-fetches the run, hands data to the client ResultsView for state
 // coordination. Keeps the matrix/cards highlight wiring out of this layer.
 
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getFullRun } from '@/lib/kv';
 import ResultsView from '@/components/results/ResultsView';
+import ErroredRunView from '@/components/results/ErroredRunView';
 
 export default async function ResultsPage({
   params,
@@ -14,8 +15,25 @@ export default async function ResultsPage({
   const { id } = await params;
   const fullRun = await getFullRun(id);
 
-  if (!fullRun || fullRun.run.status !== 'complete' || !fullRun.synthesis) {
-    notFound();
+  if (!fullRun) notFound();
+
+  if (fullRun.run.status === 'error') {
+    return (
+      <ErroredRunView
+        message={fullRun.run.errorMessage ?? 'Generation failed.'}
+      />
+    );
+  }
+
+  if (fullRun.run.status !== 'complete') {
+    // Run is still in progress — send the user to the live generation view
+    redirect(`/run/${id}`);
+  }
+
+  if (!fullRun.synthesis || fullRun.reactions.length === 0) {
+    return (
+      <ErroredRunView message="Run completed but synthesis or reactions are missing." />
+    );
   }
 
   return (
