@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import type { Variant, Persona, Reaction } from '@/lib/types';
 import { aggregateScore, scoreToColor } from '@/lib/aggregate-score';
 import ReactionDetail from './ReactionDetail';
+import VariantDetail from './VariantDetail';
 
 type Props = {
   variants: Variant[];
@@ -12,13 +13,17 @@ type Props = {
 };
 
 type CellKey = `${string}|${string}`; // variantId|personaId
+type Selection =
+  | { type: 'cell'; key: CellKey }
+  | { type: 'variant'; variantId: string }
+  | null;
 
 export default function ReactionMatrix({
   variants,
   personas,
   reactions,
 }: Props) {
-  const [selected, setSelected] = useState<CellKey | null>(null);
+  const [selection, setSelection] = useState<Selection>(null);
 
   const reactionMap = useMemo(() => {
     const map = new Map<CellKey, Reaction>();
@@ -36,9 +41,10 @@ export default function ReactionMatrix({
     }));
   }, [variants, reactions]);
 
-  const sel = selected ? reactionMap.get(selected) : null;
-  const selVariant = sel ? variants.find((v) => v.id === sel.variantId) : null;
-  const selPersona = sel ? personas.find((p) => p.id === sel.personaId) : null;
+  const cellReaction = selection?.type === 'cell' ? reactionMap.get(selection.key) : null;
+  const cellVariant = cellReaction ? variants.find((v) => v.id === cellReaction.variantId) : null;
+  const cellPersona = cellReaction ? personas.find((p) => p.id === cellReaction.personaId) : null;
+  const variantOnly = selection?.type === 'variant' ? variants.find((v) => v.id === selection.variantId) : null;
 
   return (
     <div className="border border-neutral-300 bg-white px-5 py-4">
@@ -68,20 +74,28 @@ export default function ReactionMatrix({
             </tr>
           </thead>
           <tbody>
-            {variants.map((v) => (
+            {variants.map((v) => {
+              const isVariantSel = selection?.type === 'variant' && selection.variantId === v.id;
+              return (
               <tr key={v.id}>
-                <td className="sticky left-0 z-10 bg-white px-2 py-1">
-                  <div className="font-mono text-sm font-bold text-neutral-900">
-                    {v.label}
-                    {v.title && (
-                      <span className="ml-1 font-normal text-neutral-700">
-                        — {v.title}
-                      </span>
-                    )}
-                  </div>
-                  <div className="mt-0.5 max-w-[180px] truncate font-mono text-[10px] text-neutral-500">
-                    {v.hook}
-                  </div>
+                <td className="sticky left-0 z-10 bg-white p-0">
+                  <button
+                    onClick={() => setSelection(isVariantSel ? null : { type: 'variant', variantId: v.id })}
+                    className={`block w-full px-2 py-1 text-left transition-all ${isVariantSel ? 'ring-2 ring-cyan-400 ring-offset-1' : 'hover:bg-neutral-50'}`}
+                    aria-label={`Show description for Variant ${v.label}`}
+                  >
+                    <div className="font-mono text-sm font-bold text-neutral-900">
+                      {v.label}
+                      {v.title && (
+                        <span className="ml-1 font-normal text-neutral-700">
+                          — {v.title}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-0.5 max-w-[180px] truncate font-mono text-[10px] text-neutral-500">
+                      {v.hook}
+                    </div>
+                  </button>
                 </td>
                 {personas.map((p) => {
                   const key: CellKey = `${v.id}|${p.id}`;
@@ -90,12 +104,12 @@ export default function ReactionMatrix({
                     return <td key={p.id} className="h-12 w-12 bg-neutral-100" title="No reaction" />;
                   }
                   const score = aggregateScore(reaction.scores);
-                  const isSel = selected === key;
+                  const isCellSel = selection?.type === 'cell' && selection.key === key;
                   return (
                     <td key={p.id} className="p-0">
                       <button
-                        onClick={() => setSelected(isSel ? null : key)}
-                        className={`h-12 w-12 font-mono text-xs font-bold transition-all ${isSel ? 'ring-2 ring-cyan-400 ring-offset-1' : 'hover:ring-2 hover:ring-cyan-400 hover:ring-offset-1'}`}
+                        onClick={() => setSelection(isCellSel ? null : { type: 'cell', key })}
+                        className={`h-12 w-12 font-mono text-xs font-bold transition-all ${isCellSel ? 'ring-2 ring-cyan-400 ring-offset-1' : 'hover:ring-2 hover:ring-cyan-400 hover:ring-offset-1'}`}
                         style={{ backgroundColor: scoreToColor(score), color: score > 5.5 ? 'white' : '#171717' }}
                         aria-label={`${p.name} reacting to Variant ${v.label}: ${score.toFixed(1)}`}
                       >
@@ -110,18 +124,22 @@ export default function ReactionMatrix({
                   </span>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {sel && selVariant && selPersona && (
+      {cellReaction && cellVariant && cellPersona && (
         <ReactionDetail
-          reaction={sel}
-          variant={selVariant}
-          persona={selPersona}
-          onClose={() => setSelected(null)}
+          reaction={cellReaction}
+          variant={cellVariant}
+          persona={cellPersona}
+          onClose={() => setSelection(null)}
         />
+      )}
+      {variantOnly && (
+        <VariantDetail variant={variantOnly} onClose={() => setSelection(null)} />
       )}
 
       <div className="mt-4 flex items-center justify-end gap-2 font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">
