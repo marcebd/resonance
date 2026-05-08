@@ -64,7 +64,8 @@ export function formatReactionForSynthesis(
   Flags: ${r.flagsRaised.join(' | ') || '(none)'}`;
 }
 
-function coerceVariantId(value: string, variants: Variant[]): string {
+function coerceVariantId(value: unknown, variants: Variant[]): string {
+  if (typeof value !== 'string') return '';
   if (variants.some((v) => v.id === value)) return value;
   // Fallback: model returned a label like "Variant D — THE MIDNIGHT KITCHEN"
   const m = value.match(/Variant\s+([A-E])/);
@@ -75,7 +76,8 @@ function coerceVariantId(value: string, variants: Variant[]): string {
   return value;
 }
 
-function coercePersonaId(value: string, personas: Persona[]): string {
+function coercePersonaId(value: unknown, personas: Persona[]): string {
+  if (typeof value !== 'string') return '';
   if (personas.some((p) => p.id === value)) return value;
   // Fallback: match by leading first name
   const first = value.split(',')[0].trim().toLowerCase();
